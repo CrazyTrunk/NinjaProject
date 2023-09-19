@@ -14,31 +14,42 @@ public class Player : MonoBehaviour
     private bool IsGrounded = true;
     private bool IsJumping = false;
     private bool IsAttack = false;
+    private bool IsDead = false;
+    private Vector3 savePoint;
     private string CurrentAnim;
     private float Horizontal;
+    private int CoinCollect = 0;
     // Start is called before the first frame update
     void Start()
     {
-
+        SavePoint();
+        OnInit();
+    }
+    void Update()
+    {
+        if (IsGrounded)
+        {
+            if (IsJumping)
+            {
+                return;
+            }
+            //Jump
+            if (Input.GetKeyDown(KeyCode.Space) && IsGrounded)
+            {
+                Jump();
+            }
+        }
     }
     //Update is called once per frame
     void FixedUpdate()
     {
-
-        if (!IsGrounded && rb.velocity.y < 0)
+        if (IsDead)
         {
-            ChangeAnim("Fall");
+            return;
         }
-        if (IsGrounded)
-        {
-            IsJumping = false;
-        }
-    }
-
-    void Update()
-    {
         IsGrounded = CheckGrounded();
         Horizontal = Input.GetAxisRaw("Horizontal");
+
         if (IsAttack)
         {
             rb.velocity = Vector2.zero;
@@ -51,11 +62,7 @@ public class Player : MonoBehaviour
                 return;
             }
 
-            //Jump
-            if (Input.GetKeyDown(KeyCode.Space) && IsGrounded)
-            {
-                Jump();
-            }
+
 
             if (Math.Abs(Horizontal) > 0.1f)
             {
@@ -74,6 +81,13 @@ public class Player : MonoBehaviour
             }
 
         }
+
+        if (!IsGrounded && rb.velocity.y < 0)
+        {
+            ChangeAnim("Fall");
+            IsJumping = false; 
+        }
+
         if (Math.Abs(Horizontal) > 0.1f)
         {
             rb.velocity = new Vector2(Horizontal * Time.fixedDeltaTime * Speed, rb.velocity.y);
@@ -86,6 +100,13 @@ public class Player : MonoBehaviour
             ChangeAnim("Idle");
             rb.velocity = Vector2.zero;
         }
+    }
+    public void OnInit()
+    {
+        IsDead = false;
+        IsAttack = false;
+        transform.position = savePoint;
+        ChangeAnim("Idle");
     }
     private bool CheckGrounded()
     {
@@ -126,5 +147,25 @@ public class Player : MonoBehaviour
             CurrentAnim = animName;
             animator.SetTrigger(CurrentAnim);
         }
+    }
+    //player va cham vs do vat dung Ham
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.tag == "Coin")
+        {
+            Destroy(collision.gameObject);
+            CoinCollect++;
+        }
+        if (collision.tag == "DeathZone")
+        {
+            ChangeAnim("Die");
+            IsDead = true;
+            Invoke(nameof(OnInit), 1f);
+        }
+    }
+
+    internal void SavePoint()
+    {
+        savePoint = transform.position;
     }
 }
