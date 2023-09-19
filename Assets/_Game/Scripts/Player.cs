@@ -3,12 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : Character
 {
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float Speed = 200;
-    [SerializeField] private Animator animator;
     [SerializeField] private float JumpForce = 350;
 
     private bool IsGrounded = true;
@@ -16,32 +15,14 @@ public class Player : MonoBehaviour
     private bool IsAttack = false;
     private bool IsDead = false;
     private Vector3 savePoint;
-    private string CurrentAnim;
     private float Horizontal;
     private int CoinCollect = 0;
     // Start is called before the first frame update
     void Start()
     {
         SavePoint();
-        OnInit();
     }
-    void Update()
-    {
-        if (IsGrounded)
-        {
-            if (IsJumping)
-            {
-                return;
-            }
-            //Jump
-            if (Input.GetKeyDown(KeyCode.Space) && IsGrounded)
-            {
-                Jump();
-            }
-        }
-    }
-    //Update is called once per frame
-    void FixedUpdate()
+    void LateUpdate()
     {
         if (IsDead)
         {
@@ -62,11 +43,14 @@ public class Player : MonoBehaviour
                 return;
             }
 
-
-
             if (Math.Abs(Horizontal) > 0.1f)
             {
                 ChangeAnim("Run");
+            }
+            //Jump
+            if (Input.GetKeyDown(KeyCode.Space) && IsGrounded)
+            {
+                Jump();
             }
             //Attack
             if (Input.GetKeyDown(KeyCode.Z) && IsGrounded)
@@ -79,7 +63,6 @@ public class Player : MonoBehaviour
             {
                 Throw();
             }
-
         }
 
         if (!IsGrounded && rb.velocity.y < 0)
@@ -101,12 +84,21 @@ public class Player : MonoBehaviour
             rb.velocity = Vector2.zero;
         }
     }
-    public void OnInit()
+    public override void OnInit()
     {
+        base.OnInit();  
         IsDead = false;
         IsAttack = false;
         transform.position = savePoint;
         ChangeAnim("Idle");
+    }
+    public override void OnDespawn()
+    {
+        base.OnDespawn();
+    }
+    protected override void OnDeath()
+    {
+        base.OnDeath();
     }
     private bool CheckGrounded()
     {
@@ -129,9 +121,9 @@ public class Player : MonoBehaviour
     }
     private void Jump()
     {
-        IsJumping = true;
         ChangeAnim("Jump");
         rb.AddForce(JumpForce * Vector2.up);
+        IsJumping = true;
     }
     private void ResetAttack()
     {
@@ -139,15 +131,7 @@ public class Player : MonoBehaviour
 
         ChangeAnim("Idle");
     }
-    private void ChangeAnim(string animName)
-    {
-        if (CurrentAnim != animName)
-        {
-            animator.ResetTrigger(animName);
-            CurrentAnim = animName;
-            animator.SetTrigger(CurrentAnim);
-        }
-    }
+
     //player va cham vs do vat dung Ham
     private void OnTriggerEnter2D(Collider2D collision)
     {
