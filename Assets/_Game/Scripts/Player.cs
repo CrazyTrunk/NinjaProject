@@ -7,7 +7,7 @@ public class Player : Character
 {
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private float Speed = 200;
+    [SerializeField] private float Speed = 500;
     [SerializeField] private float JumpForce = 350;
     [SerializeField] private Kunai kunaiPrefab;
     [SerializeField] private Transform throwPoint;
@@ -16,10 +16,13 @@ public class Player : Character
     private bool IsGrounded = true;
     private bool IsJumping = false;
     private bool IsAttack = false;
-    private bool IsDead = false;
     private Vector3 savePoint;
     private float Horizontal;
     private int CoinCollect = 0;
+    private void Awake()
+    {
+        CoinCollect = PlayerPrefs.GetInt("Coin", 0);
+    }
     // Start is called before the first frame update
     void LateUpdate()
     {
@@ -28,7 +31,7 @@ public class Player : Character
             return;
         }
         IsGrounded = CheckGrounded();
-        Horizontal = Input.GetAxisRaw("Horizontal");
+        //Horizontal = Input.GetAxisRaw("Horizontal");
 
         if (IsAttack)
         {
@@ -70,9 +73,9 @@ public class Player : Character
             IsJumping = false; 
         }
 
-        if (Math.Abs(Horizontal) > 0.1f)
+        if (Mathf.Abs(Horizontal) > 0.1f)
         {
-            rb.velocity = new Vector2(Horizontal * Time.fixedDeltaTime * Speed, rb.velocity.y);
+            rb.velocity = new Vector2(Horizontal * Speed * Time.fixedDeltaTime, rb.velocity.y);
             //horizon 
             transform.rotation = Quaternion.Euler(new Vector3(0, Horizontal > 0 ? 0 : 180, 0));
             //transform.localScale = new Vector3(Horizontal, 1, 1);
@@ -86,13 +89,12 @@ public class Player : Character
     public override void OnInit()
     {
         base.OnInit();  
-        IsDead = false;
         IsAttack = false;
         transform.position = savePoint;
         ChangeAnim("Idle");
         DeActiveAttack();
         SavePoint();
-
+        UIManager.instance.SetCoin(CoinCollect);
     }
     public override void OnDespawn()
     {
@@ -109,7 +111,7 @@ public class Player : Character
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.1f, groundLayer);
         return hit.collider != null;
     }
-    private void Attack()
+    public void Attack()
     {
         ChangeAnim("Attack");
         IsAttack = true;
@@ -117,7 +119,7 @@ public class Player : Character
         ActiveAttack();
         Invoke(nameof(DeActiveAttack), 0.5f);
     }
-    private void Throw()
+    public void Throw()
     {
         ChangeAnim("Throw");
         IsAttack = true;
@@ -125,7 +127,7 @@ public class Player : Character
         //vi tri va goc xoay
         Instantiate(kunaiPrefab, throwPoint.position, throwPoint.rotation);
     }
-    private void Jump()
+    public void Jump()
     {
         ChangeAnim("Jump");
         rb.AddForce(JumpForce * Vector2.up);
@@ -143,13 +145,15 @@ public class Player : Character
     {
         if(collision.tag == "Coin")
         {
-            Destroy(collision.gameObject);
             CoinCollect++;
+            PlayerPrefs.SetInt("Coin", CoinCollect);
+            UIManager.instance.SetCoin(CoinCollect);
+            Destroy(collision.gameObject);
+
         }
         if (collision.tag == "DeathZone")
         {
             ChangeAnim("Die");
-            IsDead = true;
             Invoke(nameof(OnInit), 1f);
         }
     }
@@ -164,5 +168,9 @@ public class Player : Character
     internal void SavePoint()
     {
         savePoint = transform.position;
+    }
+    public void SetMove(float horizontal)
+    {
+        this.Horizontal = horizontal;
     }
 }

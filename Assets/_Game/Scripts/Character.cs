@@ -6,6 +6,8 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
     [SerializeField] private Animator animator;
+    [SerializeField] protected HealthBar healthBar;
+    [SerializeField] private CombatText combatTextPrefab;
 
     private float hp;
     public bool IsDead => hp <= 0;
@@ -15,6 +17,7 @@ public class Character : MonoBehaviour
     private void Start()
     {
         OnInit();
+        healthBar.OnInit(100,transform);
     }
 
     // Update is called once per frame
@@ -42,8 +45,11 @@ public class Character : MonoBehaviour
             hp -= damage;
             if(IsDead)
             {
+                hp = 0;
                 OnDeath();
             }
+            healthBar.SetNewHp(hp);
+            Instantiate(combatTextPrefab, transform.position + Vector3.up, Quaternion.identity).OnInit(damage);
         }
     }
 
