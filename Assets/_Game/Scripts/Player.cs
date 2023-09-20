@@ -9,6 +9,9 @@ public class Player : Character
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private float Speed = 200;
     [SerializeField] private float JumpForce = 350;
+    [SerializeField] private Kunai kunaiPrefab;
+    [SerializeField] private Transform throwPoint;
+    [SerializeField] private GameObject attackArea;
 
     private bool IsGrounded = true;
     private bool IsJumping = false;
@@ -18,10 +21,6 @@ public class Player : Character
     private float Horizontal;
     private int CoinCollect = 0;
     // Start is called before the first frame update
-    void Start()
-    {
-        SavePoint();
-    }
     void LateUpdate()
     {
         if (IsDead)
@@ -91,6 +90,9 @@ public class Player : Character
         IsAttack = false;
         transform.position = savePoint;
         ChangeAnim("Idle");
+        DeActiveAttack();
+        SavePoint();
+
     }
     public override void OnDespawn()
     {
@@ -99,6 +101,7 @@ public class Player : Character
     protected override void OnDeath()
     {
         base.OnDeath();
+        OnInit();
     }
     private bool CheckGrounded()
     {
@@ -111,13 +114,16 @@ public class Player : Character
         ChangeAnim("Attack");
         IsAttack = true;
         Invoke(nameof(ResetAttack), 0.5f);
+        ActiveAttack();
+        Invoke(nameof(DeActiveAttack), 0.5f);
     }
     private void Throw()
     {
         ChangeAnim("Throw");
         IsAttack = true;
         Invoke(nameof(ResetAttack), 0.5f);
-
+        //vi tri va goc xoay
+        Instantiate(kunaiPrefab, throwPoint.position, throwPoint.rotation);
     }
     private void Jump()
     {
@@ -147,7 +153,14 @@ public class Player : Character
             Invoke(nameof(OnInit), 1f);
         }
     }
-
+    private void ActiveAttack()
+    {
+        attackArea.SetActive(true);
+    }
+    private void DeActiveAttack()
+    {
+        attackArea.SetActive(false);
+    }
     internal void SavePoint()
     {
         savePoint = transform.position;

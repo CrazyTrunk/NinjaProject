@@ -32,7 +32,8 @@ public class Character : MonoBehaviour
     }
     protected virtual void OnDeath()
     {
-        throw new NotImplementedException();
+        ChangeAnim("Die");
+        Invoke(nameof(OnDespawn), 2f);
     }
     public void OnHit(float damage)
     {

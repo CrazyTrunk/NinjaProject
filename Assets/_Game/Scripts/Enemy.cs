@@ -7,6 +7,7 @@ public class Enemy : Character
     [SerializeField] private Rigidbody2D rb;
     private Character target;
     public Character Target { get { return target; } }
+    [SerializeField] private GameObject attackArea;
 
     // Start is called before the first frame update
     private IState currentState;
@@ -15,13 +16,16 @@ public class Enemy : Character
     {
         base.OnInit();
         ChangeState(new IdleState());
+        DeActiveAttack();   
     }
     public override void OnDespawn()
     {
         base.OnDespawn();
+        Destroy(gameObject);
     }
     protected override void OnDeath()
     {
+        ChangeState(null);
         base.OnDeath();
     }
     public void Moving()
@@ -38,6 +42,8 @@ public class Enemy : Character
     public void Attack()
     {
         ChangeAnim("Attack");
+        ActiveAttack();
+        Invoke(nameof(DeActiveAttack), 0.5f);
     }
     private void Update()
     {
@@ -96,5 +102,13 @@ public class Enemy : Character
             ChangeState(new IdleState());
 
         }
+    }
+    private void ActiveAttack()
+    {
+        attackArea.SetActive(true);
+    }
+    private void DeActiveAttack()
+    {
+        attackArea.SetActive(false);
     }
 }
