@@ -9435,7 +9435,7 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  Speed: 200
+  Speed: 5
   JumpForce: 400
   kunaiPrefab: {fileID: 587863259955062818, guid: 05b2ec810ad335d498057ce99f0470b7, type: 3}
   throwPoint: {fileID: 1317394555}

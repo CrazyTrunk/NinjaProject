@@ -2,12 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Player : Character
 {
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private float Speed = 500;
+    [SerializeField] private float Speed = 2;
     [SerializeField] private float JumpForce = 350;
     [SerializeField] private Kunai kunaiPrefab;
     [SerializeField] private Transform throwPoint;
@@ -24,14 +25,14 @@ public class Player : Character
         CoinCollect = PlayerPrefs.GetInt("Coin", 0);
     }
     // Start is called before the first frame update
-    void LateUpdate()
+    void Update()
     {
         if (IsDead)
         {
             return;
         }
         IsGrounded = CheckGrounded();
-        //Horizontal = Input.GetAxisRaw("Horizontal");
+        Horizontal = Input.GetAxisRaw("Horizontal");
 
         if (IsAttack)
         {
@@ -44,7 +45,6 @@ public class Player : Character
             {
                 return;
             }
-
             if (Math.Abs(Horizontal) > 0.1f)
             {
                 ChangeAnim("Run");
@@ -75,7 +75,7 @@ public class Player : Character
 
         if (Mathf.Abs(Horizontal) > 0.1f)
         {
-            rb.velocity = new Vector2(Horizontal * Speed * Time.fixedDeltaTime, rb.velocity.y);
+            rb.velocity = new Vector2(Horizontal * Speed, rb.velocity.y);
             //horizon 
             transform.rotation = Quaternion.Euler(new Vector3(0, Horizontal > 0 ? 0 : 180, 0));
             //transform.localScale = new Vector3(Horizontal, 1, 1);
