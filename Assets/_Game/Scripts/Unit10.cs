@@ -8,8 +8,8 @@ public class Unit10 : MonoBehaviour
     public float speed = 5f;
     Vector3 target;
     bool isMoving = true;
-    public float waitTime = 2.0f;
-
+    public float waitTime = 5.0f;
+    bool isWaiting = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,10 +39,14 @@ public class Unit10 : MonoBehaviour
     {
         while (true)
         {
-            if(Vector2.Distance(transform.position, aPoint.position) < 0.1f)
+            if(!isWaiting &&  Vector2.Distance(transform.position, aPoint.position) < 0.1f)
             {
                 isMoving = false;
-                yield return new WaitForSeconds(Random.Range(1, waitTime));
+                float randomTime = Random.Range(1f, waitTime);
+                Debug.Log(randomTime);
+                isWaiting = true;
+                yield return new WaitForSeconds(randomTime);
+                isWaiting = false;
                 isMoving = true;
             }
             yield return null;

@@ -6696,7 +6696,7 @@ MonoBehaviour:
   aPoint: {fileID: 1905400789}
   bPoint: {fileID: 1135508140}
   speed: 5
-  waitTime: 2
+  waitTime: 5
 --- !u!1 &1135508139
 GameObject:
   m_ObjectHideFlags: 0
