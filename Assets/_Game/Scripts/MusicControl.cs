@@ -28,7 +28,6 @@ public class MusicControl : MonoBehaviour
     }
     public void VolumeUpdater(float volume)
     {
-        Debug.Log($"Volume {volume}");
         musicVolume = volume;
     }
     public void MusicReset()

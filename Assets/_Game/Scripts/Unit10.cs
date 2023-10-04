@@ -43,7 +43,6 @@ public class Unit10 : MonoBehaviour
             {
                 isMoving = false;
                 float randomTime = Random.Range(1f, waitTime);
-                Debug.Log(randomTime);
                 isWaiting = true;
                 yield return new WaitForSeconds(randomTime);
                 isWaiting = false;

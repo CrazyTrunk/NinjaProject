@@ -13,13 +13,28 @@ public class TextWriter : MonoBehaviour
         instance = this;
         textWriterSingleList = new List<TextWriterSingle>();
     }
-    public static void AddWriter_Static(Text uiText, string textToWrite, float timePerCharacter, bool invisibleCharacters)
+    public static void AddWriter_Static(Text uiText, string textToWrite, float timePerCharacter, bool invisibleCharacters, bool removeWriterBeforeAdd)
     {
+        if (removeWriterBeforeAdd)
+        {
+            instance.RemoveWriter(uiText);
+        }
         instance.AddWriter(uiText, textToWrite, timePerCharacter, invisibleCharacters);
     }
     public void AddWriter(Text uiText, string textToWrite, float timePerCharacter, bool invisibleCharacters)
     {
         textWriterSingleList.Add(new TextWriterSingle(uiText, textToWrite, timePerCharacter, invisibleCharacters));
+    }
+    private void RemoveWriter(Text uiText)
+    {
+        for(int i = 0; i < textWriterSingleList.Count; i++)
+        {
+            if (textWriterSingleList[i].GetUIText() == uiText)
+            {
+                textWriterSingleList.RemoveAt(i);
+                i--;
+            }
+        }
     }
     private void Update()
     {
@@ -27,8 +42,10 @@ public class TextWriter : MonoBehaviour
         {
             bool destroyInstance = textWriterSingleList[i].Update();
             if (destroyInstance)
+            {
                 textWriterSingleList.RemoveAt(i);
-            i--;
+                i--;
+            }
         }
 
     }
@@ -70,5 +87,9 @@ public class TextWriterSingle
             }
         }
         return false;
+    }
+    public Text GetUIText()
+    {
+        return _uiText;
     }
 }

@@ -20,7 +20,6 @@ public class Unit3 : MonoBehaviour
     private void MoveNext()
     {
         currentPointIndex++;
-        Debug.Log(currentPointIndex);
         if (currentPointIndex >= points.Length)
         {
             currentPointIndex = 0;
