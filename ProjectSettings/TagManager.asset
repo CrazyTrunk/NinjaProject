@@ -9,6 +9,7 @@ TagManager:
   - SavePoint
   - EnemyWall
   - Enemy
+  - GameMusic
   layers:
   - Default
   - TransparentFX
@@ -18,8 +19,8 @@ TagManager:
   - UI
   - Player
   - Enemy
-  - 
-  - 
+  - SettingUI
+  - BackgroundUI
   - 
   - 
   - 
