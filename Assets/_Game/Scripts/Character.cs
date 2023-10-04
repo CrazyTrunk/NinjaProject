@@ -28,6 +28,8 @@ public class Character : MonoBehaviour
     public virtual void OnInit()
     {
         hp = 100;
+        healthBar.OnInit(100, transform);
+
     }
     public virtual void OnDespawn()
     {
