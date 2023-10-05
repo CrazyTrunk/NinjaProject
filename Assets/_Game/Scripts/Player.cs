@@ -43,6 +43,7 @@ public class Player : Character
         {
             if (IsJumping)
             {
+                IsJumping = false; 
                 return;
             }
             if (Math.Abs(Horizontal) > 0.1f)
@@ -66,11 +67,10 @@ public class Player : Character
                 Throw();
             }
         }
-
-        if (!IsGrounded && rb.velocity.y < 0)
+        if (!IsGrounded && rb.velocity.y <= 0.1f)
         {
             ChangeAnim("Fall");
-            IsJumping = false; 
+            IsJumping = false;
         }
 
         if (Mathf.Abs(Horizontal) > 0.1f)
