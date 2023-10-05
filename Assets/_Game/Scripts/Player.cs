@@ -17,7 +17,7 @@ public class Player : Character
     private bool IsGrounded = true;
     private bool IsJumping = false;
     private bool IsAttack = false;
-    private Vector3 savePoint;
+    public Vector3 savePoint;
     private float Horizontal;
     private int CoinCollect = 0;
     private void Awake()
