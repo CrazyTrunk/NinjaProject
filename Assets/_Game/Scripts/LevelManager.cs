@@ -30,31 +30,47 @@ public class LevelManager : MonoBehaviour
 
     public void LoadLevel()
     {
+        DestroyCurrentLevel();
+        currentLevelInstance = Instantiate(levelPrefab, spawnLevelPosition.position, Quaternion.identity);
+        Transform spawnPoint = currentLevelInstance.transform.Find("SpawnPoint");
+        if (spawnPoint != null)
+        {
+            SetPlayerSpawnPoint(spawnPoint);
+            ActivatePlayer();
+            SetCameraToPlayer();
+        }
+    }
+    private void DestroyCurrentLevel()
+    {
         if (currentLevelInstance)
         {
             Destroy(currentLevelInstance);
         }
-        currentLevelInstance = Instantiate(levelPrefab, spawnLevelPosition.position, Quaternion.identity);
-        Transform spawnPoint = currentLevelInstance.transform.Find("SpawnPoint");
-        if(spawnPoint != null)
+    }
+    private void ActivatePlayer()
+    {
+        player.SetActive(true);
+    }
+    private void SetPlayerSpawnPoint(Transform spawnPoint)
+    {
+        player.transform.position = spawnPoint.position;
+        SetPlayerSavePoint(spawnPoint.position);
+    }
+    private void SetCameraToPlayer()
+    {
+        Camera cameraScript = FindObjectOfType<Camera>();
+        if (cameraScript != null)
         {
-            player.transform.position = spawnPoint.position;
-            SetPlayerSavePoint(spawnPoint.position);
-            player.SetActive(true);
-            Camera cameraScript = FindObjectOfType<Camera>();
-            if (cameraScript != null)
-            {
-                cameraScript.SetPlayerCamera();
-            }
+            cameraScript.SetPlayerCamera();
         }
     }
     private void SetPlayerSavePoint(Vector3 newSavePoint)
     {
-        Player playerScript = player.GetComponent<Player>(); 
+        Player playerScript = player.GetComponent<Player>();
 
         if (playerScript != null)
         {
-            playerScript.savePoint = newSavePoint;
+            playerScript.SetSavePointPlayer(newSavePoint);
         }
     }
 }

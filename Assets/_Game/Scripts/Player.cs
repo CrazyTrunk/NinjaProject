@@ -17,7 +17,7 @@ public class Player : Character
     private bool IsGrounded = true;
     private bool IsJumping = false;
     private bool IsAttack = false;
-    public Vector3 savePoint;
+    private Vector3 savePoint;
     private float Horizontal;
     private int CoinCollect = 0;
     private void Awake()
@@ -168,6 +168,10 @@ public class Player : Character
     internal void SavePoint()
     {
         savePoint = transform.position;
+    }
+    public void SetSavePointPlayer(Vector3 position)
+    {
+        savePoint = position;
     }
     public void SetMove(float horizontal)
     {
