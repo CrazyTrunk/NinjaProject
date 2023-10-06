@@ -10,7 +10,7 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameObject currentLevelInstance;
     [SerializeField] private Button levelButton;
     [SerializeField] public GameObject player;
-    [SerializeField] public Transform spawnLevelPosition;
+    Vector3 mapSpawnPosition;
     private void Awake()
     {
         player.SetActive(false);
@@ -31,7 +31,7 @@ public class LevelManager : MonoBehaviour
     public void LoadLevel()
     {
         DestroyCurrentLevel();
-        currentLevelInstance = Instantiate(levelPrefab, spawnLevelPosition.position, Quaternion.identity);
+        currentLevelInstance = Instantiate(levelPrefab, mapSpawnPosition, Quaternion.identity);
         Transform spawnPoint = currentLevelInstance.transform.Find("SpawnPoint");
         if (spawnPoint != null)
         {
