@@ -8,22 +8,18 @@ public class Camera : MonoBehaviour
     public Vector3 offset;
     public float Speed = 20;
     // Start is called before the first frame update
-    //void Start()
-    //{
-    //    target = FindObjectOfType<Player>()?.transform;
-    //}
+    void Start()
+    {
+        target = FindObjectOfType<Player>()?.transform;
+    }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(target == null)
+        if (target == null)
         {
             return;
         }
         transform.position = Vector3.Lerp(transform.position, target.position + offset, Time.deltaTime * Speed);
-    }
-    public void SetPlayerCamera()
-    {
-        target = FindObjectOfType<Player>()?.transform;
     }
 }
